@@ -7,12 +7,10 @@ class Home extends Component {
   constructor(props) {
     super(props);
   }
-
   add = () => {
     let data = this.props.homeReducer.data;
     this.props.addRecord(data + 1);
   };
-
   render() {
     return (
       <div>

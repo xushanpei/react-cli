@@ -1,5 +1,3 @@
-import { combineReducers } from "redux";
-
 const defaultState = {
   data: 0
 };
