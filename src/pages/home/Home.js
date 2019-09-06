@@ -3,6 +3,12 @@ import { Button } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
 
+@connect(
+  ({ homeReducer }) => ({ homeReducer }),
+  {
+    addRecord: actions.addRecord
+  }
+)
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -22,18 +28,20 @@ class Home extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
-  ...state
-});
+// const mapStateToProps = state => ({
+//   ...state
+// });
 
-const mapDispatchToProps = dispatch => ({
-  addRecord(index) {
-    dispatch(actions.addRecord(index));
-  }
-});
+// const mapDispatchToProps = dispatch => ({
+//   addRecord(index) {
+//     dispatch(actions.addRecord(index));
+//   }
+// });
 // mapStateToProps： 声明将state与props对应的映射关系
 // mapDispatchToProps： 将需要对store修改操作声明在这个对象中
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(Home);
+
+export default Home;
