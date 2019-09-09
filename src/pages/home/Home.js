@@ -6,7 +6,8 @@ import actions from "../../redux/homeRedux/action";
 @connect(
   ({ homeReducer }) => ({ homeReducer }),
   {
-    addRecord: actions.addRecord
+    addRecord: actions.addRecord,
+    test: actions.test
   }
 )
 class Home extends Component {
@@ -15,7 +16,10 @@ class Home extends Component {
   }
   add = () => {
     let data = this.props.homeReducer.data;
-    this.props.addRecord(data + 1);
+    this.props.addRecord(++data);
+  };
+  request = () => {
+    this.props.test();
   };
   render() {
     return (
@@ -24,6 +28,8 @@ class Home extends Component {
           Home 页面 -- 点我
         </Button>
         <Button>获取homeReducer数据 : {this.props.homeReducer.data}</Button>
+        <hr />
+        <Button onClick={this.request}>点击触发请求</Button>
       </div>
     );
   }
