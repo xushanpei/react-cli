@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
+const { TextArea } = Input;
 
 @connect(
   ({ homeReducer }) => ({ homeReducer }),
@@ -29,6 +30,7 @@ class Home extends Component {
         </Button>
         <Button>获取homeReducer数据 : {this.props.homeReducer.data}</Button>
         <hr />
+        <TextArea name="" id="" cols="100" rows="10" value={JSON.stringify(this.props.homeReducer.test)}></TextArea>
         <Button onClick={this.request}>点击触发请求</Button>
       </div>
     );
