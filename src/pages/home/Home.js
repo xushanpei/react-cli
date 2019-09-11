@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
+import test from "../../components/HOC/Test";
 const { TextArea } = Input;
 
+@test
 @connect(
   ({ homeReducer }) => ({ homeReducer }),
   {
@@ -14,6 +16,7 @@ const { TextArea } = Input;
 class Home extends Component {
   constructor(props) {
     super(props);
+    console.log("props", props);
   }
   add = () => {
     let data = this.props.homeReducer.data;
@@ -32,6 +35,9 @@ class Home extends Component {
         <hr />
         <TextArea name="" id="" cols="100" rows="10" value={JSON.stringify(this.props.homeReducer.test)}></TextArea>
         <Button onClick={this.request}>点击触发请求</Button>
+        <hr />
+        <Button>HOC中的数据 : {this.props.hocTest}</Button>
+        {/* <Button onClick={this.props.testhoc}>触发Hoc方法</Button> */}
       </div>
     );
   }
