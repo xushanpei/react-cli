@@ -7,7 +7,7 @@ const { TextArea } = Input;
 @connect(
   ({ homeReducer }) => ({ homeReducer }),
   {
-    addRecord: actions.addRecord,
+    addrecord: actions.addrecord,
     test: actions.test
   }
 )
@@ -17,7 +17,7 @@ class Home extends Component {
   }
   add = () => {
     let data = this.props.homeReducer.data;
-    this.props.addRecord(++data);
+    this.props.addrecord(++data);
   };
   request = () => {
     this.props.test();
