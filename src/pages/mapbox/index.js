@@ -31,6 +31,35 @@ class MapBox extends Component {
     //设置语言
     const language = new MapboxLanguage({ defaultLanguage: "zh" });
     map.addControl(language);
+
+    setTimeout(() => {
+      map.addLayer({
+        id: "room-extrusion",
+        type: "fill-extrusion",
+        source: "museumData",
+        paint: {
+          // See the Mapbox Style Spec for details on property functions
+          // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
+          "fill-extrusion-color": {
+            // Get the fill-extrusion-color from the source 'color' property.
+            property: "color" /* 从source中获取对应属性的属性值 */,
+            type: "identity" /* input as output */
+          },
+          "fill-extrusion-height": {
+            // Get fill-extrusion-height from the source 'height' property.
+            property: "height",
+            type: "identity"
+          },
+          "fill-extrusion-base": {
+            // Get fill-extrusion-base from the source 'base_height' property.
+            property: "base_height",
+            type: "identity"
+          },
+          // Make extrusions slightly opaque for see through indoor walls.
+          "fill-extrusion-opacity": 0.5 /* 透明度  */
+        }
+      });
+    }, 1000);
   }
 
   render() {
