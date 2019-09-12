@@ -10,6 +10,7 @@ import actions from "../../redux/homeRedux/action";
 function TestHook(props) {
   //声明一个 count 的 state 变量
   const [count, setCount] = useState(0);
+  const [refValue, setRefValue] = useState(null);
   //useRef
   const ref = useRef();
 
@@ -36,6 +37,7 @@ function TestHook(props) {
     // `current` 指向已挂载到 DOM 上的文本输入元素
     ref.current.focus();
     console.log(ref.current.state.value);
+    setRefValue(ref.current.state.value);
   };
 
   return (
@@ -47,7 +49,7 @@ function TestHook(props) {
       <hr />
       <Button>Hook中获取 store中的数据</Button> <Button>{props.homeReducer.data}</Button>
       <hr />
-      <Input ref={ref} style={{ width: "200px" }}></Input> <Button onClick={getRef}>获取ref</Button>
+      <Input ref={ref} style={{ width: "200px" }}></Input> <Button onClick={getRef}>获取ref</Button> <Button>{refValue}</Button>
     </div>
   );
 }
