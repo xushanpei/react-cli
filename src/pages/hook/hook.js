@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Input } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
 
@@ -10,6 +10,8 @@ import actions from "../../redux/homeRedux/action";
 function TestHook(props) {
   //声明一个 count 的 state 变量
   const [count, setCount] = useState(0);
+  //useRef
+  const ref = useRef();
 
   // 第二个参数为空，只会第一次执行
   useEffect(() => {
@@ -28,6 +30,14 @@ function TestHook(props) {
   }, [count]);
 
   console.log("这是props", props);
+
+  // 定义一个方法 获取 ref
+  const getRef = () => {
+    // `current` 指向已挂载到 DOM 上的文本输入元素
+    ref.current.focus();
+    console.log(ref.current.state.value);
+  };
+
   return (
     <div>
       这是一个hook测试组件
@@ -36,6 +46,8 @@ function TestHook(props) {
       <Button>{count}</Button>
       <hr />
       <Button>Hook中获取 store中的数据</Button> <Button>{props.homeReducer.data}</Button>
+      <hr />
+      <Input ref={ref} style={{ width: "200px" }}></Input> <Button onClick={getRef}>获取ref</Button>
     </div>
   );
 }
