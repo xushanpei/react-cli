@@ -3,6 +3,7 @@ import { Button, Input } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
 import test from "../../components/HOC/Test";
+import TestHook from "../hook/hook";
 const { TextArea } = Input;
 
 @test
@@ -42,6 +43,8 @@ class Home extends Component {
         <hr />
         <Button>HOC中的数据 : {this.props.hocTest}</Button>
         <Button onClick={this.props.testhoc}>触发Hoc方法</Button>
+        <hr />
+        <TestHook data={"hahh"}></TestHook>
       </div>
     );
   }
