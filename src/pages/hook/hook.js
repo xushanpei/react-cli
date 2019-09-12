@@ -42,7 +42,7 @@ function TestHook(props) {
 
 /**
  *
- * 需要注意的是 hook 中不能使用 @connect ,所以只能按照传统的 connect 用法 来访问 redux
+ * 需要注意的是 hook 中不能使用 @connect ,所以只能按照传统的 connect 用法 来访问 redux (原因是不能使用 @decorators)
  */
 const mapStateToProps = state => ({
   ...state
