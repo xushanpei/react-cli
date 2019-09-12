@@ -3,6 +3,10 @@ import { Button } from "antd";
 import { connect } from "react-redux";
 import actions from "../../redux/homeRedux/action";
 
+/**
+ *
+ * hook中没有 this
+ */
 function TestHook(props) {
   //声明一个 count 的 state 变量
   const [count, setCount] = useState(0);
@@ -36,6 +40,10 @@ function TestHook(props) {
   );
 }
 
+/**
+ *
+ * 需要注意的是 hook 中不能使用 @connect ,所以只能按照传统的 connect 用法 来访问 redux
+ */
 const mapStateToProps = state => ({
   ...state
 });
