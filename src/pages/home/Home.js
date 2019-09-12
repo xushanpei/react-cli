@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import actions from "../../redux/homeRedux/action";
 import test from "../../components/HOC/Test";
 import TestHook from "../hook/hook";
@@ -41,6 +42,11 @@ class Home extends Component {
         <Button onClick={this.props.testhoc}>触发Hoc方法</Button>
         <hr />
         <TestHook data={"hahh"}></TestHook>
+
+        <hr />
+        <Link to={{ pathname: "/mapbox" }}>
+          <Button>MapBox</Button>
+        </Link>
       </div>
     );
   }

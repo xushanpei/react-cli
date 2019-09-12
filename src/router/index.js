@@ -6,6 +6,7 @@ import RouterView from "./RouterView";
 const Home = loadable(() => import("../pages/home/Home"), { fallback: <Loading /> });
 const Detail = loadable(() => import("../pages/detail/Detail"), { fallback: <Loading /> });
 const System = loadable(() => import("../pages/system/System"), { fallback: <Loading /> });
+const MapBox = loadable(() => import("../pages/mapbox"), { fallback: <Loading /> });
 
 const routes = [
   {
@@ -22,6 +23,10 @@ const routes = [
         component: System
       }
     ]
+  },
+  {
+    path: "/mapbox",
+    component: MapBox
   }
 ];
 
