@@ -25,6 +25,10 @@ class Home extends Component {
   request = () => {
     this.props.test();
   };
+
+  componentWillUpdate() {
+    console.log("传值", this.props.this);
+  }
   render() {
     return (
       <div>
@@ -37,7 +41,7 @@ class Home extends Component {
         <Button onClick={this.request}>点击触发请求</Button>
         <hr />
         <Button>HOC中的数据 : {this.props.hocTest}</Button>
-        {/* <Button onClick={this.props.testhoc}>触发Hoc方法</Button> */}
+        <Button onClick={this.props.testhoc}>触发Hoc方法</Button>
       </div>
     );
   }

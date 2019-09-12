@@ -8,12 +8,12 @@ const test = WrappedComponent => {
         hocTest: "这是一个测试数据HOC测试"
       };
     }
-    // testhoc = () => {
-    //   alert("hoc中的方法");
-    // };
+    testhoc = () => {
+      alert("hoc中的方法");
+    };
 
     render() {
-      return <WrappedComponent {...this.state} {...this.props}></WrappedComponent>;
+      return <WrappedComponent {...this.state} {...this.props} testhoc={this.testhoc}></WrappedComponent>;
     }
   };
 };
