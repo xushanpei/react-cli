@@ -26,10 +26,6 @@ class Home extends Component {
   request = () => {
     this.props.test();
   };
-
-  componentWillUpdate() {
-    console.log("传值", this.props.this);
-  }
   render() {
     return (
       <div>

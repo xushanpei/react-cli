@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
+import { connect } from "react-redux";
+import actions from "../../redux/homeRedux/action";
 
 function TestHook(props) {
   //声明一个 count 的 state 变量
@@ -28,8 +30,26 @@ function TestHook(props) {
       <hr />
       <Button onClick={() => setCount(count + 1)}>点击测试hook</Button>
       <Button>{count}</Button>
+      <hr />
+      <Button>Hook中获取 store中的数据</Button> <Button>{props.homeReducer.data}</Button>
     </div>
   );
 }
 
-export default TestHook;
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  addrecord(index) {
+    dispatch(actions.addrecord(index));
+  }
+});
+// mapStateToProps： 声明将state与props对应的映射关系
+// mapDispatchToProps： 将需要对store修改操作声明在这个对象中
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TestHook);
+
+// export default TestHook;
