@@ -9,7 +9,7 @@ class MapBox extends Component {
   }
 
   componentDidMount() {
-    mapboxgl.accessToken = "pk.eyJ1IjoieHVzaGFucGVpIiwiYSI6ImNqenl5M2t0aTA0dzczY3AzdXJoajB6emcifQ.Gpduip9bhda1q8BX2Xc2UQ";
+    mapboxgl.accessToken = "pk.eyJ1IjoieHVzaGFucGVpIiwiYSI6ImNrMGdmc2k0MjA2bHczbW83bWk4d3o1NXAifQ.V7asl3c2e-eKGqjERiwneQ";
 
     //设置地图区域
     let bounds = [
@@ -18,54 +18,101 @@ class MapBox extends Component {
     ];
 
     const map = new mapboxgl.Map({
-      style: "mapbox://styles/mapbox/navigation-guidance-day-v2",
+      style: "mapbox://styles/mapbox/navigation-preview-night-v2",
       center: [118.78, 32.07], //地图中心经纬度
       zoom: 11.5, //缩放级别
       minZoom: 9,
       maxZoom: 24,
       pitch: 45,
       bearing: -17.6,
-      container: "map",
-      maxBounds: bounds
+      container: "map"
+      // maxBounds: bounds
     });
     //设置语言
     const language = new MapboxLanguage({ defaultLanguage: "zh" });
     map.addControl(language);
 
-    setTimeout(() => {
+    var size = 200;
+
+    var pulsingDot = {
+      width: size,
+      height: size,
+      data: new Uint8Array(size * size * 4),
+
+      onAdd: function() {
+        var canvas = document.createElement("canvas");
+        canvas.width = this.width;
+        canvas.height = this.height;
+        this.context = canvas.getContext("2d");
+      },
+
+      render: function() {
+        var duration = 1000;
+        var t = (performance.now() % duration) / duration;
+
+        var radius = (size / 2) * 0.3;
+        var outerRadius = (size / 2) * 0.7 * t + radius;
+        var context = this.context;
+
+        // draw outer circle
+        context.clearRect(0, 0, this.width, this.height);
+        context.beginPath();
+        context.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
+        context.fillStyle = "rgba(255, 200, 200," + (1 - t) + ")";
+        context.fill();
+
+        // draw inner circle
+        context.beginPath();
+        context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
+        context.fillStyle = "rgba(255, 100, 100, 1)";
+        context.strokeStyle = "white";
+        context.lineWidth = 2 + 4 * (1 - t);
+        context.fill();
+        context.stroke();
+
+        // update this image's data with data from the canvas
+        this.data = context.getImageData(0, 0, this.width, this.height).data;
+
+        // keep the map repainting
+        map.triggerRepaint();
+
+        // return `true` to let the map know that the image was updated
+        return true;
+      }
+    };
+
+    map.on("load", function() {
+      map.addImage("pulsing-dot", pulsingDot, { pixelRatio: 2 });
+
       map.addLayer({
-        id: "room-extrusion",
-        type: "fill-extrusion",
-        source: "museumData",
-        paint: {
-          // See the Mapbox Style Spec for details on property functions
-          // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
-          "fill-extrusion-color": {
-            // Get the fill-extrusion-color from the source 'color' property.
-            property: "color" /* 从source中获取对应属性的属性值 */,
-            type: "identity" /* input as output */
-          },
-          "fill-extrusion-height": {
-            // Get fill-extrusion-height from the source 'height' property.
-            property: "height",
-            type: "identity"
-          },
-          "fill-extrusion-base": {
-            // Get fill-extrusion-base from the source 'base_height' property.
-            property: "base_height",
-            type: "identity"
-          },
-          // Make extrusions slightly opaque for see through indoor walls.
-          "fill-extrusion-opacity": 0.5 /* 透明度  */
+        id: "points",
+        type: "symbol",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [118.78, 32.07]
+                }
+              }
+            ]
+          }
+        },
+        layout: {
+          "icon-image": "pulsing-dot"
         }
       });
-    }, 1000);
+    });
   }
 
   render() {
     return (
       <div>
-        <div id="map" className="map"></div>
+        <div id="map" className="map" style={{ height: "2000px" }}></div>
       </div>
     );
   }
