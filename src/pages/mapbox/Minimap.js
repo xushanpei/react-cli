@@ -18,7 +18,7 @@ Minimap.prototype = Object.assign({}, mapboxgl.NavigationControl.prototype, {
     id: "mapboxgl-minimap",
     width: "320px",
     height: "180px",
-    style: "mapbox://styles/mapbox/streets-v8",
+    style: "mapbox://styles/mapbox/light-v10",
     center: [0, 0],
     zoom: 6,
 
