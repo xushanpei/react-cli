@@ -21,7 +21,7 @@ class MapBox extends Component {
 
     const map = new mapboxgl.Map({
       style: "mapbox://styles/xushanpei/ck0nzo1uv4sd81cmflb27fqem",
-      center: [118.78, 32.07], //地图中心经纬度
+      center: [116.40,39.9], //地图中心经纬度
       zoom: 15.5, //缩放级别
       minZoom: 0,
       maxZoom: 24,
@@ -33,7 +33,7 @@ class MapBox extends Component {
       antialias: true,
 
       // if parent map zoom >= 18 and minimap zoom >= 14, set minimap zoom to 16
-      zoomLevels: [[18, 14, 16], [16, 12, 14], [14, 10, 12], [12, 8, 10], [10, 6, 8]]
+      // zoomLevels: [[18, 14, 16], [16, 12, 14], [14, 10, 12], [12, 8, 10], [10, 6, 8]]
       // maxBounds: bounds
     });
 
@@ -98,10 +98,29 @@ class MapBox extends Component {
         }
       }
       map.addImage("pulsing-dot", pulsingDot, { pixelRatio: 2 });
-
       map.addLayer(
         {
-          id: "points",
+          id: "3d-buildings",
+          source: "composite",
+          "source-layer": "building",
+          filter: ["==", "extrude", "true"],
+          type: "fill-extrusion",
+          minzoom: 0,
+          paint: {
+            "fill-extrusion-color": "#aaa",
+
+            // use an 'interpolate' expression to add a smooth transition effect to the
+            // buildings as the user zooms in
+            "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "height"]],
+            "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "min_height"]],
+            "fill-extrusion-opacity": 1
+          }
+        },
+        // labelLayerId
+      );
+      map.addLayer(
+        {
+          id: "point",
           type: "symbol",
           source: {
             type: "geojson",
@@ -112,7 +131,7 @@ class MapBox extends Component {
                   type: "Feature",
                   geometry: {
                     type: "Point",
-                    coordinates: [118.78, 32.07]
+                    coordinates: [116.40,39.9]
                   }
                 }
               ]
@@ -121,13 +140,13 @@ class MapBox extends Component {
           layout: {
             "icon-image": "pulsing-dot"
           }
-        },
-        {}
+        }
       );
 
       map.addLayer({
-        id: "point",
+        id: "points",
         type: "symbol",
+        minzoom: 10,
         source: {
           type: "geojson",
           data: {
@@ -137,7 +156,7 @@ class MapBox extends Component {
                 type: "Feature",
                 geometry: {
                   type: "Point",
-                  coordinates: [118.79, 32.06]
+                  coordinates: [116.40,39.9]
                 }
               }
             ]
@@ -147,26 +166,6 @@ class MapBox extends Component {
           "icon-image": "pulsing-dot"
         }
       });
-      map.addLayer(
-        {
-          id: "3d-buildings",
-          source: "composite",
-          "source-layer": "building",
-          filter: ["==", "extrude", "true"],
-          type: "fill-extrusion",
-          minzoom: 15,
-          paint: {
-            "fill-extrusion-color": "#aaa",
-
-            // use an 'interpolate' expression to add a smooth transition effect to the
-            // buildings as the user zooms in
-            "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 15, 1000, 24, ["get", "height"]],
-            "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 1000, 15.05, ["get", "min_height"]],
-            "fill-extrusion-opacity": 0.6
-          }
-        },
-        labelLayerId
-      );
     });
 
     map.on("click", "points", function(e) {
