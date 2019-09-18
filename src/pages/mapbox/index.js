@@ -11,7 +11,7 @@ class MapBox extends Component {
   }
 
   componentDidMount() {
-    mapboxgl.accessToken = "pk.eyJ1IjoieHVzaGFucGVpIiwiYSI6ImNrMGdmc2k0MjA2bHczbW83bWk4d3o1NXAifQ.V7asl3c2e-eKGqjERiwneQ";
+    mapboxgl.accessToken = "pk.eyJ1IjoieHVzaGFucGVpIiwiYSI6ImNqenl5M2t0aTA0dzczY3AzdXJoajB6emcifQ.Gpduip9bhda1q8BX2Xc2UQ";
 
     //设置地图区域
     let bounds = [
@@ -20,7 +20,7 @@ class MapBox extends Component {
     ];
 
     const map = new mapboxgl.Map({
-      style: "mapbox://styles/mapbox/light-v10",
+      style: "mapbox://styles/xushanpei/ck0nzo1uv4sd81cmflb27fqem",
       center: [118.78, 32.07], //地图中心经纬度
       zoom: 15.5, //缩放级别
       minZoom: 0,
@@ -155,8 +155,8 @@ class MapBox extends Component {
 
             // use an 'interpolate' expression to add a smooth transition effect to the
             // buildings as the user zooms in
-            "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "height"]],
-            "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "min_height"]],
+            "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 15, 1000, 24, ["get", "height"]],
+            "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 1000, 15.05, ["get", "min_height"]],
             "fill-extrusion-opacity": 0.6
           }
         },
@@ -167,8 +167,7 @@ class MapBox extends Component {
     map.on("click", "points", function(e) {
       console.log(e);
       var coordinates = e.features[0].geometry.coordinates.slice();
-      var description =
-        '<strong>Seersucker Bike Ride and Social</strong><p>Feeling dandy? Get fancy, grab your bike, and take part in this year\'s <a href="http://dandiesandquaintrelles.com/2012/04/the-seersucker-social-is-set-for-june-9th-save-the-date-and-start-planning-your-look/" target="_blank" title="Opens in a new window">Seersucker Social</a> bike ride from Dandies and Quaintrelles. After the ride enjoy a lawn party at Hillwood with jazz, cocktails, paper hat-making, and more. 11:00-7:00 p.m.</p>';
+      var description = `<p>lat : ${e.lngLat.lat}</p><p>lng : ${e.lngLat.lng}</p>`;
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
