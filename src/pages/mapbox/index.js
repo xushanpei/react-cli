@@ -30,6 +30,7 @@ class MapBox extends Component {
       container: "map",
       // should be a function; will be bound to Minimap
       zoomAdjust: null,
+      antialias: true,
 
       // if parent map zoom >= 18 and minimap zoom >= 14, set minimap zoom to 16
       zoomLevels: [[18, 14, 16], [16, 12, 14], [14, 10, 12], [12, 8, 10], [10, 6, 8]]
@@ -87,6 +88,7 @@ class MapBox extends Component {
 
     map.on("load", function() {
       var layers = map.getStyle().layers;
+      console.log(layers);
 
       var labelLayerId;
       for (var i = 0; i < layers.length; i++) {
@@ -97,28 +99,31 @@ class MapBox extends Component {
       }
       map.addImage("pulsing-dot", pulsingDot, { pixelRatio: 2 });
 
-      map.addLayer({
-        id: "points",
-        type: "symbol",
-        source: {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [118.78, 32.07]
+      map.addLayer(
+        {
+          id: "points",
+          type: "symbol",
+          source: {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [118.78, 32.07]
+                  }
                 }
-              }
-            ]
+              ]
+            }
+          },
+          layout: {
+            "icon-image": "pulsing-dot"
           }
         },
-        layout: {
-          "icon-image": "pulsing-dot"
-        }
-      });
+        {}
+      );
 
       map.addLayer({
         id: "point",
@@ -190,6 +195,7 @@ class MapBox extends Component {
     );
     map.addControl(new mapboxgl.Minimap(), "bottom-right");
     //设置语言
+    map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector("body") }));
     const language = new MapboxLanguage({ defaultLanguage: "zh" });
     map.addControl(language);
   }
