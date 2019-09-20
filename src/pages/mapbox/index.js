@@ -4,6 +4,8 @@ import mapboxgl from "mapbox-gl";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "./Minimap";
+import "../../assets/mapbox-gl-geocoder.css";
+import "../../assets/mapbox-gl.css";
 
 class MapBox extends Component {
   constructor(props) {
@@ -21,7 +23,7 @@ class MapBox extends Component {
 
     const map = new mapboxgl.Map({
       style: "mapbox://styles/xushanpei/ck0nzo1uv4sd81cmflb27fqem",
-      center: [116.40,39.9], //地图中心经纬度
+      center: [116.4, 39.9], //地图中心经纬度
       zoom: 15.5, //缩放级别
       minZoom: 0,
       maxZoom: 24,
@@ -30,7 +32,7 @@ class MapBox extends Component {
       container: "map",
       // should be a function; will be bound to Minimap
       zoomAdjust: null,
-      antialias: true,
+      antialias: true
 
       // if parent map zoom >= 18 and minimap zoom >= 14, set minimap zoom to 16
       // zoomLevels: [[18, 14, 16], [16, 12, 14], [14, 10, 12], [12, 8, 10], [10, 6, 8]]
@@ -115,33 +117,31 @@ class MapBox extends Component {
             "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "min_height"]],
             "fill-extrusion-opacity": 1
           }
-        },
+        }
         // labelLayerId
       );
-      map.addLayer(
-        {
-          id: "point",
-          type: "symbol",
-          source: {
-            type: "geojson",
-            data: {
-              type: "FeatureCollection",
-              features: [
-                {
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [116.40,39.9]
-                  }
+      map.addLayer({
+        id: "point",
+        type: "symbol",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [116.4, 39.9]
                 }
-              ]
-            }
-          },
-          layout: {
-            "icon-image": "pulsing-dot"
+              }
+            ]
           }
+        },
+        layout: {
+          "icon-image": "pulsing-dot"
         }
-      );
+      });
 
       map.addLayer({
         id: "points",
@@ -156,7 +156,7 @@ class MapBox extends Component {
                 type: "Feature",
                 geometry: {
                   type: "Point",
-                  coordinates: [116.40,39.9]
+                  coordinates: [116.4, 39.9]
                 }
               }
             ]
