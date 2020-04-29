@@ -156,27 +156,45 @@ class MapBox extends Component {
         }
       });
 
-      map.addLayer({
-        "id": "points1",
-        "type": "symbol",
-        "source": {
-          "type": "geojson",
-          "data": {
-            "type": "FeatureCollection",
-            "features": [{
-              "type": "Feature",
-              "geometry": {
-                "type": "Point",
-                "coordinates": [-75.789, 41.674]
-              }
-            }]
-          }
-        },
-        "layout": {
-          "icon-image": "pulsing-dot"
-        }
-      });
+      // map.addLayer({
+      //   "id": "points1",
+      //   "type": "symbol",
+      //   "source": {
+      //     "type": "geojson",
+      //     "data": {
+      //       "type": "FeatureCollection",
+      //       "features": [{
+      //         "type": "Feature",
+      //         "geometry": {
+      //           "type": "Point",
+      //           "coordinates": [-75.789, 41.674]
+      //         }
+      //       }]
+      //     }
+      //   },
+      //   "layout": {
+      //     "icon-image": "pulsing-dot"
+      //   }
+      // });
     });
+    map.on("click", "points", function(e) {
+      console.log(e);
+      var coordinates = e.features[0].geometry.coordinates.slice();
+      var description = `<p>lat : ${e.lngLat.lat}</p><p>lng : ${e.lngLat.lng}</p>`;
+
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map);
+    });
+
     //禁用底图旋转
     map.dragRotate.disable();
     // disable map rotation using touch rotation gesture
