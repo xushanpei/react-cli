@@ -6,8 +6,10 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "./Minimap";
 import "../../assets/mapbox-gl-geocoder.css";
 import "../../assets/mapbox-gl.css";
+import gzm from "./gzm.png"
 
 class MapBox extends Component {
+  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
   }
@@ -16,29 +18,70 @@ class MapBox extends Component {
     mapboxgl.accessToken = "pk.eyJ1IjoieHVzaGFucGVpIiwiYSI6ImNqenl5M2t0aTA0dzczY3AzdXJoajB6emcifQ.Gpduip9bhda1q8BX2Xc2UQ";
 
     //设置地图区域
-    let bounds = [
-      [118.21, 28.11], // Southwest coordinates，西南坐标
-      [122.4, 31.33] // Northeast coordinates，东北坐标
-    ];
+    // let bounds = [
+    //   // [-80.425, 46.437],
+    //   [-71.516, 46.437],
+    //   // [-71.516, 37.936],
+    //   [-80.425, 37.936]
+    // ];
+
+    var mapStyle = {
+      "version": 8,
+      "name": "Dark",
+      "sources": {
+        "mapbox": {
+          "type": "vector",
+          "url": "mapbox://mapbox.mapbox-streets-v8"
+        },
+        "overlay": {
+          "type": "image",
+          "url": gzm,
+          "coordinates": [
+            [-80.425, 46.437],
+            [-71.516, 46.437],
+            [-71.516, 37.936],
+            [-80.425, 37.936]
+          ]
+        }
+      },
+      "sprite": "mapbox://sprites/mapbox/dark-v10",
+      "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+      "layers": [
+        {
+          "id": "背景",
+          "type": "background",
+          "paint": {
+            "background-color": "rgba(204,204,201,1)"
+          },
+          "layout": {
+            "visibility": "visible"
+          },
+          "metadata": {
+            "mapbox:group": "92ca48f13df25"
+          }
+        },
+        {
+          "id": "overlay",
+          "source": "overlay",
+          "type": "raster",
+          "paint": { "raster-opacity": 1 }
+        }
+      ]
+    };
+
 
     const map = new mapboxgl.Map({
-      style: "mapbox://styles/xushanpei/ck0nzo1uv4sd81cmflb27fqem",
-      center: [116.4, 39.9], //地图中心经纬度
-      zoom: 15.5, //缩放级别
-      minZoom: 0,
-      maxZoom: 24,
-      pitch: 45,
-      bearing: -17.6,
-      container: "map",
-      // should be a function; will be bound to Minimap
-      zoomAdjust: null,
-      antialias: true
+      container: 'map',
+      maxZoom: 15,
+      minZoom: 6,
+      zoom: 6,
+      center: [-75.789, 41.874],
+      style: mapStyle,
 
       // if parent map zoom >= 18 and minimap zoom >= 14, set minimap zoom to 16
       // zoomLevels: [[18, 14, 16], [16, 12, 14], [14, 10, 12], [12, 8, 10], [10, 6, 8]]
       // maxBounds: bounds
     });
-
     var size = 200;
 
     var pulsingDot = {
@@ -46,33 +89,33 @@ class MapBox extends Component {
       height: size,
       data: new Uint8Array(size * size * 4),
 
-      onAdd: function() {
-        var canvas = document.createElement("canvas");
+      onAdd: function () {
+        var canvas = document.createElement('canvas');
         canvas.width = this.width;
         canvas.height = this.height;
-        this.context = canvas.getContext("2d");
+        this.context = canvas.getContext('2d');
       },
 
-      render: function() {
+      render: function () {
         var duration = 1000;
         var t = (performance.now() % duration) / duration;
 
-        var radius = (size / 2) * 0.3;
-        var outerRadius = (size / 2) * 0.7 * t + radius;
+        var radius = size / 2 * 0.3;
+        var outerRadius = size / 2 * 0.7 * t + radius;
         var context = this.context;
 
         // draw outer circle
         context.clearRect(0, 0, this.width, this.height);
         context.beginPath();
         context.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
-        context.fillStyle = "rgba(255, 200, 200," + (1 - t) + ")";
+        context.fillStyle = 'rgba(255, 200, 200,' + (1 - t) + ')';
         context.fill();
 
         // draw inner circle
         context.beginPath();
         context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
-        context.fillStyle = "rgba(255, 100, 100, 1)";
-        context.strokeStyle = "white";
+        context.fillStyle = 'rgba(255, 100, 100, 1)';
+        context.strokeStyle = 'white';
         context.lineWidth = 2 + 4 * (1 - t);
         context.fill();
         context.stroke();
@@ -88,115 +131,63 @@ class MapBox extends Component {
       }
     };
 
-    map.on("load", function() {
-      var layers = map.getStyle().layers;
-      console.log(layers);
+    map.on('load', function () {
 
-      var labelLayerId;
-      for (var i = 0; i < layers.length; i++) {
-        if (layers[i].type === "symbol" && layers[i].layout["text-field"]) {
-          labelLayerId = layers[i].id;
-          break;
-        }
-      }
-      map.addImage("pulsing-dot", pulsingDot, { pixelRatio: 2 });
-      map.addLayer(
-        {
-          id: "3d-buildings",
-          source: "composite",
-          "source-layer": "building",
-          filter: ["==", "extrude", "true"],
-          type: "fill-extrusion",
-          minzoom: 0,
-          paint: {
-            "fill-extrusion-color": "#aaa",
+      map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
 
-            // use an 'interpolate' expression to add a smooth transition effect to the
-            // buildings as the user zooms in
-            "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "height"]],
-            "fill-extrusion-base": ["interpolate", ["linear"], ["zoom"], 15, 0, 15.05, ["get", "min_height"]],
-            "fill-extrusion-opacity": 1
-          }
-        }
-        // labelLayerId
-      );
       map.addLayer({
-        id: "point",
-        type: "symbol",
-        source: {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [116.4, 39.9]
-                }
+        "id": "points",
+        "type": "symbol",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "FeatureCollection",
+            "features": [{
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [-75.789, 41.874]
               }
-            ]
+            }]
           }
         },
-        layout: {
+        "layout": {
           "icon-image": "pulsing-dot"
         }
       });
 
       map.addLayer({
-        id: "points",
-        type: "symbol",
-        minzoom: 10,
-        source: {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [116.4, 39.9]
-                }
+        "id": "points1",
+        "type": "symbol",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "FeatureCollection",
+            "features": [{
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [-75.789, 41.674]
               }
-            ]
+            }]
           }
         },
-        layout: {
+        "layout": {
           "icon-image": "pulsing-dot"
         }
       });
     });
+    //禁用底图旋转
+    map.dragRotate.disable();
+    // disable map rotation using touch rotation gesture
+    map.touchZoomRotate.disableRotation();
 
-    map.on("click", "points", function(e) {
-      console.log(e);
-      var coordinates = e.features[0].geometry.coordinates.slice();
-      var description = `<p>lat : ${e.lngLat.lat}</p><p>lng : ${e.lngLat.lng}</p>`;
-
-      // Ensure that if the map is zoomed out such that multiple
-      // copies of the feature are visible, the popup appears
-      // over the copy being pointed to.
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
-
-      new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(map);
-    });
-
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
-      })
-    );
-    map.addControl(new mapboxgl.Minimap(), "bottom-right");
-    //设置语言
-    map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector("body") }));
-    const language = new MapboxLanguage({ defaultLanguage: "zh" });
-    map.addControl(language);
+    // map.addControl(
+    //   new MapboxGeocoder({
+    //     accessToken: mapboxgl.accessToken,
+    //     mapboxgl: mapboxgl
+    //   })
+    // );
   }
 
   render() {
